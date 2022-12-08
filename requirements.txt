@@ -1,0 +1,4 @@
+requests
+subprocess.run
+bs4
+pdbpp
