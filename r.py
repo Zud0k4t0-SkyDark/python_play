@@ -1,11 +1,9 @@
 #!/usr/bin/python
-import pdb
 import requests,sys ,signal, random, subprocess, time, os
 from bs4 import BeautifulSoup
 from rich import print
 
 def def_handler(sig, frame):
-
     print ("\n\n[red][!][/red] Saliendo...\n\n")
     sys.exit(1)
 
@@ -14,36 +12,21 @@ def def_handler(sig, frame):
 signal.signal(signal.SIGINT, def_handler)
 
 # Petición a la pagina Web
-
-n_words = str(random.randint(1,4))
-
 r = requests.get("https://www.palabrasaleatorias.com/?fs=4&fs2=0&Submit=Nueva+palabra")
 words = r.text
-
-# Parser to bs4
-
 def get_words():
     soup = BeautifulSoup(words, 'html.parser')
-
     word_list = []
-
     for word in soup.td.find_all('div'):
         word_list.append(word.get_text(strip=True))
-
     word_list.pop()
-        
     return word_list
 
 def banner(x,y):
-    
     # Mostrando la palabra a Adivinar
-
     print ("[red][*][/red] Palabra a adivinar...\n\n\t[blue]==> [/blue]%s\n" % x)
-    
     # Palabra Secreta
-
     #print (y) 
-
 def words_s(x, w, y_w):
     word=""
     for letter in w:
@@ -59,9 +42,6 @@ def game(x):
     your_word = ""
     word = random.choice(x)
     letters_bad = ""
-    #banner(your_word,word)
-    #word_Hidden = '_ ' * len(word)
-    #banner(word_Hidden, word) 
     while lifes > 0:
         errors = 0
         word_storage, errors = words_s(errors, word, your_word)
@@ -73,13 +53,11 @@ def game(x):
         os.system("tput cnorm")
         letter = input("")
         letter = letter.strip()
-        #your_word+=letter
         if letter not in word:
             letters_bad += letter+" " 
             lifes-=1
             print ("\n\n[[red]*[/red]] Fallaste !!")
             print ("Te quedan {} vidas\n".format(lifes))
-
             print ("Letras ya introducidas\n", end="")
             print (*letters_bad, sep="-")
             os.system("tput civis")
@@ -92,12 +70,11 @@ def game(x):
             print ("Suspendido por 5s")
             time.sleep(5)
             s = subprocess.run("clear")
-            #banner(word_storage, word)
         your_word+=letter
         if lifes == 0:
-            print("Perdiste.")
+            print("\n\n[[red]![/red]] [cyan]Perdiste...[/cyan]\n")
     else:
-        print ("Bien jugado")
+        print ("[[green]*[/green]] Bien jugado !!\n")
 if __name__=='__main__':
     words = get_words()
     game(words)
